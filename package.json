@@ -1,0 +1,17 @@
+{
+  "name": "servidorejemplo",
+  "version": "1.0.0",
+  "description": "Es un servidor ejemplo para el curso fullstack intermedio",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon  ./src/app.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "mongoose": "^8.7.0",
+    "nodemon": "^3.1.7"
+  },
+  "author": "Diego Legarda",
+  "license": "ISC"
+}
