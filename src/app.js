@@ -1,10 +1,16 @@
-//vamos a crear un servidor express
 const express = require('express');
+const cors = require('cors');
+const conectarDB = require('./BaseDatos/ConexionMongoDB');
+const RutasUsuario = require('./Rutas/rutasUsuario');
+const dotenv = require('dotenv');
+const puerto= process.env.PORT || 3000;
 const app = express();
-const puerto = 3000;
 
 // Middleware para manejar JSON
 app.use(express.json());
+
+//Permitir acceso desde otras IP
+app.use(cors());
 
 // Middleware para manejar datos de formularios
 app.use(express.urlencoded({ extended: true }));
@@ -81,6 +87,13 @@ app.delete('/api/usuarios/:id', (req, res) => {
 
 
 
+//Manejo de MongoDB
+
+// Conectar a la base de datos
+conectarDB();
+
+// Rutas
+app.use('/api/usuariosDB', RutasUsuario);
 
 //listener del servidor
 
