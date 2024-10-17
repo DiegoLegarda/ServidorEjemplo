@@ -30,6 +30,7 @@ app.get('/saludo/:nombre', (req, res) => {
     res.send(`Hola ${nombre}`);
 });
 
+
 //*************************************** */
 //      Manejo de usuarios en un arreglo
 const usuarios = [

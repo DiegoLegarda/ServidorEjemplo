@@ -27,11 +27,11 @@ const obtenerUsuarioPorId = async (req, res) => {
 // Crear un nuevo usuario
 const crearUsuario = async (req, res) => {
   const { nombre, correo, contraseña } = req.body;
-
+  console.log(req.body);
   const nuevoUsuario = new Usuario({
     nombre,
     correo,
-    contraseña,
+    contraseña
   });
 
   try {
