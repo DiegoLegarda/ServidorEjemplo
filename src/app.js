@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const conectarDB = require('./BaseDatos/ConexionMongoDB');
 const RutasUsuario = require('./Rutas/rutasUsuario');
+const RutasUsername=require('./Rutas/rutasMongoDB');
+const ValidarLogin=require('./Intermediarios/autenticacionDB')
 const dotenv = require('dotenv');
 const puerto= process.env.PORT || 3000;
 const app = express();
@@ -10,7 +12,10 @@ const app = express();
 app.use(express.json());
 
 //Permitir acceso desde otras IP
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',  
+    credentials: true  
+}));
 
 // Middleware para manejar datos de formularios
 app.use(express.urlencoded({ extended: true }));
@@ -95,6 +100,15 @@ conectarDB();
 
 // Rutas
 app.use('/api/usuariosDB', RutasUsuario);
+
+// Rutas Username
+app.use('/api/Username',RutasUsername);
+
+// Ruta para Autenticacion
+app.post('/api/login', ValidarLogin, (req, res) =>{
+    res.json({ rol: req.user.rol });
+    });
+
 
 //listener del servidor
 
