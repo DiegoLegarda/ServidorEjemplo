@@ -2,10 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const conectarDB = require('./BaseDatos/ConexionMongoDB');
 const RutasUsuario = require('./Rutas/rutasUsuario');
-const RutasUsername=require('./Rutas/rutasMongoDB');
-const ValidarLogin=require('./Intermediarios/autenticacionDB')
+const RutasUsername = require('./Rutas/rutasMongoDB');
+const ValidarLogin = require('./Intermediarios/autenticacionDB')
+const Token = require('./Intermediarios/tokenDB')
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+
 const dotenv = require('dotenv');
-const puerto= process.env.PORT || 3000;
+const puerto = process.env.PORT || 3000;
 const app = express();
 
 // Middleware para manejar JSON
@@ -13,12 +17,15 @@ app.use(express.json());
 
 //Permitir acceso desde otras IP
 app.use(cors({
-    origin: 'http://localhost:5173',  
-    credentials: true  
+    origin: 'http://localhost:5173',
+    credentials: true
 }));
 
 // Middleware para manejar datos de formularios
 app.use(express.urlencoded({ extended: true }));
+
+//Middleware para parsear cookie
+app.use(cookieParser());
 
 // ruta get "hola mundo"
 app.get('/', (req, res) => {
@@ -84,7 +91,7 @@ app.delete('/api/usuarios/:id', (req, res) => {
             mensaje: 'Usuario no encontrado'
         });
     }
-    const usuarioEliminado = usuarios.splice(index, 1)[0]; 
+    const usuarioEliminado = usuarios.splice(index, 1)[0];
     res.status(200).json({
         mensaje: 'Usuario eliminado exitosamente',
         usuario: usuarioEliminado
@@ -102,17 +109,39 @@ conectarDB();
 app.use('/api/usuariosDB', RutasUsuario);
 
 // Rutas Username
-app.use('/api/Username',RutasUsername);
+app.use('/api/Username', RutasUsername);
 
 // Ruta para Autenticacion
-app.post('/api/login', ValidarLogin, (req, res) =>{
+app.post('/api/login', ValidarLogin, (req, res) => {
     res.json({ rol: req.user.rol });
-    });
+});
+
+
+//Ejemplos con token 
+app.post('/api/login/token', ValidarLogin, Token.envioTokenDB, (req, res) => {
+    res.json({ rol: req.user.rol });
+});
+
+
+//Ruta para el segundo servidor, protegida con token
+app.use('/images', Token.verificacionTokenDB, (req, res, next) => {
+    console.log(`Usuario ${req.user.username} está accediendo a imágenes`);
+    next();
+}, (req, res) => {
+    // Redirigir al servidor de imágenes
+    res.redirect('http://localhost:3002');
+});
+
+
+
+//Ejemplos con cookie
+
+
 
 
 //listener del servidor
 
 app.listen(puerto, () => {
-    console.log(`Servidor escuchando en el puerto http://localhost:${puerto}`);
+    console.log(`Servidor de autenticacion escuchando en el puerto http://localhost:${puerto}`);
 });
 

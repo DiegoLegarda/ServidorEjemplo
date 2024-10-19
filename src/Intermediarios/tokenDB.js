@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
-const secretKey = 'Bootcamp';
-const Usuario = require('../modelos/modeloMDB');
+const dotenv = require('dotenv');
+const secretKey = process.env.SecretKey;
+const Usuario = require('../Modelos/modeloMDB');
 const cookieParser = require('cookie-parser');
 
 
@@ -69,7 +70,6 @@ const verificacionTokenCookieDB = (req, res, next) => {
         console.log("token no recibido");
         return res.status(403).json({ error: 'Se requiere token de autenticación' });
     }
-    //const cookieParts = tokenrecibido.split('=');
     token = tokenrecibido;
     console.log("token:" + token);
     if (!token) {
