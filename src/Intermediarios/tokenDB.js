@@ -10,9 +10,7 @@ const envioTokenDB = (req, res) => {
     if (!req.user) {
         return res.status(401).json({ message: 'Usuario no autenticado' });
     }
-    if (!req.user) {
-        return res.status(401).json({ message: 'Usuario no autenticado' });
-    }
+    
     
     // Accediendo a las propiedades de usuario
     const username = req.user.username;
@@ -37,7 +35,7 @@ const envioTokenCookieDB = (req, res, next) => {
     console.log("token enviado "+token);
     res.cookie('nuevoCookie', token, { httpOnly: true, secure:true, sameSite:'None',maxAge: 3600000 });
     res.cookie('seraCookie', 'token', { secure: true, sameSite: 'None', maxAge: 3600000 }); 
-    res.json({ message: 'Token generado con éxito', username: username, rol: rol });
+    req.user = { username, rol };
     next();
 }
 
