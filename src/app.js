@@ -145,44 +145,9 @@ app.use('/images', Token.verificacionTokenCookieDB, (req, res, next) => {
     next();
 }, (req, res) => {
     // Redirigir al servidor de imágenes
-    res.redirect('http://localhost:3002');
+    res.redirect('https://servidorimagenes-production.up.railway.app/');
 });
 
-
-//***************************************************** */
-//    Método para enviar script en cookie
-// Endpoint para enviar el script en una cookie
-app.get('/envioScript', (req, res) => {
-    const script = `
-    (function() {
-      document.addEventListener('DOMContentLoaded', () => {
-        let clickCount = 0;  
-        const countButton = document.getElementById('countButton');
-        if (countButton) {
-          countButton.addEventListener('click', () => {
-            clickCount++;
-            localStorage.setItem('contador', clickCount);
-            document.cookie = 'clickCount=' + clickCount + '; path=/';
-          });
-        } else {
-          console.error('El botón con id "countButton" no se encontró en el DOM.');
-        }
-      });
-    })();
-    `;
-    res.cookie('clickScript', script, { httpOnly: false, sameSite: 'Lax' });
-    res.send('Script enviado en la cookie.');
-  });
-  
-  // Endpoint para recibir el número de clicks
-  app.post('/recepcionInfo', (req, res) => {
-    const contador = req.body.contador;
-    const  clickCount = req.cookies.cookieInfo;  
-    console.log('Número de clicks recibidos:', clickCount);
-    console.log('Número de clicks recibidos en el body',  contador);
-    res.send('Número de clicks recibidos.');
-  });
-  
 
 
 

@@ -14,13 +14,7 @@ const UserSchema = new Schema({
   email: {
     type: String,
     required: true,
-    validate: {
-      validator: function(v) {
-        // Validar el formato del correo electrónico
-        return /\S+@\S+\.\S+/.test(v);
-      },
-      message: props => `${props.value} no es un correo electrónico válido`
-    }
+    unique: true,    
   },
   password: {
     type: String,
