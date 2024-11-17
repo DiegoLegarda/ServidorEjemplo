@@ -16,10 +16,21 @@ const app = express();
 app.use(express.json());
 
 //Permitir acceso desde otras IP
-app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
-}));
+const allowedOrigins = [
+    'http://localhost:5173', // Origen de desarrollo
+    'https://proyecto-vite-two.vercel.app', // Origen de producción
+  ];
+  
+  app.use(cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Origen no permitido por CORS'));
+      }
+    },
+    credentials: true, // Permitir cookies y encabezados con credenciales
+  }));
 
 // Middleware para manejar datos de formularios
 app.use(express.urlencoded({ extended: true }));
@@ -140,12 +151,13 @@ app.post('/api/login/token', ValidarLogin, Token.envioTokenCookieDB, (req, res) 
     console.log("Usuario con ingreso exitoso");
 });
 
-app.use('/images', Token.verificacionTokenCookieDB, (req, res, next) => {
+app.use('/imagenes', Token.verificacionTokenCookieDB, (req, res, next) => {
     console.log(`Usuario ${req.user.username} está accediendo a imágenes`);
     next();
 }, (req, res) => {
     // Redirigir al servidor de imágenes
     res.redirect('https://servidorimagenes-production.up.railway.app/');
+    
 });
 
 
