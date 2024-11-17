@@ -19,6 +19,7 @@ app.use(express.json());
 const allowedOrigins = [
     'http://localhost:5173', // Origen de desarrollo
     'https://proyecto-vite-git-main-diego-legardas-projects.vercel.app/', // Origen de producción
+    'https://proyecto-vite-p1jxkcios-diego-legardas-projects.vercel.app/'
   ];
   
   app.use(cors({
